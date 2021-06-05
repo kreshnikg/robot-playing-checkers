@@ -1,4 +1,4 @@
-import Dobot as Dbt
+from DobotAPI import Dobot as Dbt
 import time
 
 zPiece = -38
