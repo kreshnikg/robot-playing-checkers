@@ -11,7 +11,7 @@ def getROIavgColor(frame, x, y, r):
 # cap = cv2.VideoCapture(1)
 # ret, img = cap.read()
 # img = img[40:410, 130:490]
-img = cv2.imread("../img/checkers_scanner_pieces_2.jpg")
+img = cv2.imread("./img/checkers_scanner_pieces_2.jpg")
 
 # img = cv2.imread("img/checkers_scanner.jpg")
 # img = ~img

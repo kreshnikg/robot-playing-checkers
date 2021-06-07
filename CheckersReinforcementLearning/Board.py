@@ -215,6 +215,9 @@ class Board:
         Makes a given move on the board, and (as long as is wanted) switches the indicator for
         which players turn it is.
         """
+        # Custom code
+        captured = []
+        # end Custom code
         if abs(move[0][0] - move[1][0]) == 2:
             for j in range(len(move) - 1):
                 if move[j][0] % 2 == 1:
@@ -227,7 +230,9 @@ class Board:
                         middle_y = move[j + 1][1]
                     else:
                         middle_y = move[j][1]
-                        
+                # Custom code
+                captured.append([int((move[j][0] + move[j + 1][0]) / 2), middle_y])
+                # end Custom code
                 self.spots[int((move[j][0] + move[j + 1][0]) / 2)][middle_y] = self.EMPTY_SPOT
                 
                 
@@ -242,6 +247,8 @@ class Board:
                 
         if switch_player_turn:
             self.player_turn = not self.player_turn
+
+        return captured
        
 
     def get_potential_spots_from_moves(self, moves):

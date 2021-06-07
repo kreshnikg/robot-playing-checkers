@@ -16,5 +16,5 @@ boardValues = list(gameState.values())
 
 # Pretty print board
 for i in range(0, len(boardKeys), 8):
-    print(boardKeys[i][0].capitalize(), "[" + "] [".join(str(e) for e in boardValues[i:i+8]) + "]")
+    print(boardKeys[i][0].capitalize(), "[" + "] [".join(str(e) for e in boardValues[i:i+8]).replace("0", " ") + "]")
 print("# ", "   ".join(str(e) for e in range(1, 9)), )

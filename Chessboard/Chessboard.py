@@ -25,8 +25,8 @@ def pointInCircle(point, circle, radius):
 
 
 class Chessboard:
-    WHITE = 1
-    BLACK = 2
+    WHITE = 2
+    BLACK = 1
     WHITE_KING = 3
     BLACK_KING = 4
 
@@ -132,4 +132,7 @@ class Chessboard:
         return self.gameState
 
     def getPiecePositionOnBoard(self, x, y):
-        print("")
+        boardKeys = list(self.boardPositionsCenter.keys())
+        for boardKey in boardKeys:
+            if pointInCircle(self.boardPositionsCenter[boardKey], (x, y), 6):
+                return boardKey
