@@ -29,6 +29,7 @@ class Chessboard:
     BLACK = 1
     WHITE_KING = 3
     BLACK_KING = 4
+    EMPTY = 0
 
     def __init__(self):
         # gameState is a dictionary with coordinates {"a1": "", ... "b2": ""}
@@ -52,9 +53,20 @@ class Chessboard:
         board = {}
         letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
         numbers = [1, 2, 3, 4, 5, 6, 7, 8]
+        lastLetter = letters[0]
+        i = 0
         for letter in letters:
+            if letter != lastLetter:
+                lastLetter = letter
+                i = i + 1
             for number in numbers:
-                board[letter + str(number)] = 0
+                if i % 2 == 0:
+                    if (number % 2) == 0:
+                        continue
+                else:
+                    if (number % 2) > 0:
+                        continue
+                board[letter + str(number)] = self.EMPTY
         self.boardPositionsCenter = board.copy()
         self.gameState = board.copy()
 
@@ -94,7 +106,7 @@ class Chessboard:
     def getNextEmptyPos(self, skipPositions=0):
         boardKeys = list(self.boardPositionsCenter.keys())
         for i in range(len(boardKeys)):
-            if (self.boardPositionsCenter[boardKeys[i]]) == 0:
+            if (self.boardPositionsCenter[boardKeys[i]]) == self.EMPTY:
                 return boardKeys[i + skipPositions]
 
     def appendPosition(self, x, y, pos):
@@ -104,16 +116,15 @@ class Chessboard:
         corners = detectBoardCorners(img)
         for i in range(len(corners)):
             x, y = corners[i][0][0], corners[i][0][1]
-            self.appendPosition(round(x - 22), round(y - 22), self.getNextEmptyPos())
-
-            if ((i + 1) % 7) == 0:
-                self.appendPosition(round(x + 22), round(y - 22), self.getNextEmptyPos())
-            elif i >= 42:
-                self.appendPosition(round(x - 22), round(y + 22), self.getNextEmptyPos(7))
-
-            if i == 48:
-                self.appendPosition(round(x - 22), round(y + 22), self.getNextEmptyPos())
-                self.appendPosition(round(x + 22), round(y + 22), self.getNextEmptyPos())
+            if i % 2 == 0:
+                self.appendPosition(round(x - 22), round(y - 22), self.getNextEmptyPos())
+                if (i >= 42) & (i < 48):
+                    self.appendPosition(round(x + 22), round(y + 22), self.getNextEmptyPos(3))
+                if i == 48:
+                    self.appendPosition(round(x + 22), round(y + 22), self.getNextEmptyPos())
+            else:
+                if (i + 1) % 7 == 0:
+                    self.appendPosition(round(x + 22), round(y - 22), self.getNextEmptyPos())
 
     def detectGameState(self, img):
         self.detectBoard(img)
@@ -136,3 +147,50 @@ class Chessboard:
         for boardKey in boardKeys:
             if pointInCircle(self.boardPositionsCenter[boardKey], (x, y), 6):
                 return boardKey
+
+    def convertStateToAI(self):
+        boardValues = list(self.gameState.values())
+        reshaped = np.reshape(boardValues, (8, 4))
+        odd = reshaped[::2]
+        even = reshaped[1:8:2]
+        AIBoard = []
+        for i in range(4):
+            AIBoard.append(odd[:, i])
+            AIBoard.append(even[:, i])
+        return AIBoard
+
+    def convertStateFromAI(self, AIBoard):
+        odd = np.array(AIBoard[::2])
+        even = np.array(AIBoard[1:8:2])
+        final = []
+        for i in range(4):
+            final.append(odd[:, i])
+            final.append(even[:, i])
+        final = np.array(final).flatten()
+        converted = self.gameState.copy()
+        convertedKeys = list(converted.keys())
+        for i in range(len(final)):
+            converted[convertedKeys[i]] = final[i]
+        return converted
+
+    def prettyPrintBoard(self, gameState=None):
+        if gameState is None:
+            gameState = self.gameState
+
+        board = {}
+        letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
+        numbers = [1, 2, 3, 4, 5, 6, 7, 8]
+        for letter in letters:
+            for number in numbers:
+                pos = letter + str(number)
+                if pos in gameState:
+                    board[pos] = gameState[pos]
+                else:
+                    board[pos] = self.EMPTY
+
+        boardKeys = list(board.keys())
+        boardValues = list(board.values())
+        for i in range(0, len(boardKeys), 8):
+            print(boardKeys[i][0].capitalize(),
+                  "[" + "] [".join(str(e) for e in boardValues[i:i + 8]).replace("0", " ") + "]")
+        print("# ", "   ".join(str(e) for e in range(1, 9)))

@@ -7,30 +7,15 @@ import numpy as np
 
 chb = Chessboard.Chessboard()
 
-img = cv2.imread("./img/checkers_scanner_pieces_2_move.jpg")
+img = cv2.imread("./img/checkers_scanner_pieces_2.jpg")
 
 gameState = chb.detectGameState(img)
 
 boardKeys = list(gameState.keys())
 boardValues = list(gameState.values())
 
-lastLetter = 'a'
-i = 0
-for boardKey in boardKeys:
-    if boardKey[0] != lastLetter:
-        lastLetter = boardKey[0]
-        i = i + 1
-    if i % 2 == 0:
-        if ((int(boardKey[1]) % 2) == 0):
-            gameState[boardKey] = None
-    else:
-        if ((int(boardKey[1]) % 2) > 0):
-            gameState[boardKey] = None
-
-filteredGameState = {k: v for k, v in gameState.items() if v is not None}
-
 print(gameState)
-listed = list(filteredGameState.values())
+listed = list(gameState.values())
 print(listed)
 
 reshaped = np.reshape(listed, (8, 4))

@@ -9,7 +9,7 @@ chb = Chessboard.Chessboard()
 # ret, img = cap.read()
 # img = img[40:410, 130:490]
 
-img = cv2.imread("../img/checkers_scanner_pieces.jpg")
+img = cv2.imread("../img/checkers_scanner_pieces_2.jpg")
 
 corners = Chessboard.detectBoardCorners(img)
 pieces = chb.detectPieces(img)
@@ -20,10 +20,20 @@ print("pieces", pieces)
 board = {}
 letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
 numbers = [1, 2, 3, 4, 5, 6, 7, 8]
-
+lastLetter = letters[0]
+i = 0
 for letter in letters:
+    if letter != lastLetter:
+        lastLetter = letter
+        i = i + 1
     for number in numbers:
-        board[letter + str(number)] = None
+        if i % 2 == 0:
+            if (number % 2) == 0:
+                continue
+        else:
+            if (number % 2) > 0:
+                continue
+        board[letter + str(number)] = 0
 
 print(board)
 
@@ -63,33 +73,32 @@ def appendPosition(x, y, pos):
 
 def getNextEmptyPos(skipPositions=0):
     for i in range(len(boardKeys)):
-        if (board[boardKeys[i]]) is None:
+        if (board[boardKeys[i]]) == 0:
             return boardKeys[i + skipPositions]
 
 
 for i in range(len(corners)):
     x, y = corners[i][0][0], corners[i][0][1]
-    appendPosition(round(x - 22), round(y - 22), getNextEmptyPos())
+    if i % 2 == 0:
+        appendPosition(round(x - 22), round(y - 22), getNextEmptyPos())
+        if (i >= 42) & (i < 48):
+            appendPosition(round(x + 22), round(y + 22), getNextEmptyPos(3))
+        if i == 48:
+            appendPosition(round(x + 22), round(y + 22), getNextEmptyPos())
+    else:
+        if (i + 1) % 7 == 0:
+            appendPosition(round(x + 22), round(y - 22), getNextEmptyPos())
 
-    if ((i + 1) % 7) == 0:
-        appendPosition(round(x + 22), round(y - 22), getNextEmptyPos())
-    elif i >= 42:
-        appendPosition(round(x - 22), round(y + 22), getNextEmptyPos(7))
 
-    if i == 48:
-        appendPosition(round(x - 22), round(y + 22), getNextEmptyPos())
-        appendPosition(round(x + 22), round(y + 22), getNextEmptyPos())
-
-print(board)
 plt.imshow(img)
 plt.show()
+print(board)
 
 
 # check if piece is inside a position
 def pointInCircle(point, circle, radius):
     # ((pointX - circleX)**2 + (pointY - circleY)**2) < radius**2
     return ((point[0] - circle[0]) ** 2 + (point[1] - circle[1]) ** 2) < radius ** 2
-
 
 for boardKey in boardKeys:
     position = board[boardKey]
