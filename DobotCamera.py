@@ -8,7 +8,7 @@ import numpy as np
 class DobotCamera:
 
     def __init__(self, xDobRefPoint, yDobRefPoint, xCamRefPoint,
-                 yCamRefPoint, xScaleFactor, yScaleFactor, camWidth, camHeight):
+                 yCamRefPoint, xScaleFactor, yScaleFactor):
         self.X_DOB_REF_POINT = xDobRefPoint
         self.Y_DOB_REF_POINT = yDobRefPoint
         self.X_CAM_REF_POINT = xCamRefPoint
@@ -17,11 +17,11 @@ class DobotCamera:
         self.X_SCALE_FACTOR = xScaleFactor
         self.Y_SCALE_FACTOR = yScaleFactor
 
-        self.CAM_WIDTH = camWidth
-        self.CAM_HEIGHT = camHeight
+        # self.CAM_WIDTH = camWidth
+        # self.CAM_HEIGHT = camHeight
 
-    def convertCameraToDobot(self, point, camRefPoint, dobRefPoint):
+    def convertCameraToDobot(self, point):
         return (
-                dobRefPoint[0] + ((point[0] - camRefPoint[0]) * self.X_SCALE_FACTOR),
-                dobRefPoint[1] + ((point[1] - camRefPoint[1]) * self.Y_SCALE_FACTOR)
+                self.X_DOB_REF_POINT + ((point[0] - self.X_CAM_REF_POINT) * self.X_SCALE_FACTOR),
+                self.Y_DOB_REF_POINT + ((point[1] - self.Y_CAM_REF_POINT) * self.Y_SCALE_FACTOR)
         )

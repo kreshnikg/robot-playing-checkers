@@ -32,15 +32,6 @@ class Chessboard:
     EMPTY = 0
 
     def __init__(self):
-        # gameState is a dictionary with coordinates {"a1": "", ... "b2": ""}
-        # or        [[0, 1, 0, 1, 0, 1, 0, 1],
-        # 			[1, 0, 1, 0, 1, 0, 1, 0],
-        # 			[0, 1, 0, 1, 0, 1, 0, 1],
-        # 			[0, 0, 0, 0, 0, 0, 0, 0],
-        # 			[0, 0, 0, 0, 0, 0, 0, 0],
-        # 			[-1, 0, -1, 0, -1, 0, -1, 0],
-        # 			[0, -1, 0, -1, 0, -1, 0, -1],
-        # 			[-1, 0, -1, 0, -1, 0, -1, 0]]
         self.gameState = {}
         self.boardPositionsCenter = {}
         self.pieceCoordinateInsidePos = {}
@@ -89,10 +80,6 @@ class Chessboard:
                                    minRadius=minRadius,
                                    maxRadius=maxRadius)
 
-        self.pieces = {
-            "black": [],
-            "white": []
-        }
         if circles is not None:
             circlesRound = np.round(circles[0, :]).astype("int")
             for (x, y, r) in circlesRound:
@@ -154,8 +141,11 @@ class Chessboard:
             if pointInCircle(self.boardPositionsCenter[boardKey], (x, y), 6):
                 return boardKey
 
-    def convertStateToAI(self):
-        boardValues = list(self.gameState.values())
+    def convertStateToAI(self, values=True):
+        if values:
+            boardValues = list(self.gameState.values())
+        else:
+            boardValues = list(self.gameState.keys())
         reshaped = np.reshape(boardValues, (8, 4))
         odd = reshaped[::2]
         even = reshaped[1:8:2]
@@ -189,14 +179,7 @@ class Chessboard:
         return boardKeys[pos + (position[1] * 8)]
 
     def convertPositionToAI(self, position):
-        boardValues = list(self.gameState.keys())
-        reshaped = np.reshape(boardValues, (8, 4))
-        odd = reshaped[::2]
-        even = reshaped[1:8:2]
-        AIBoard = []
-        for i in range(4):
-            AIBoard.append(odd[:, i])
-            AIBoard.append(even[:, i])
+        AIBoard = self.convertStateToAI(values=False)
         AIBoard = np.array(AIBoard)
         return np.array(np.where(AIBoard == position)).flatten()
 
