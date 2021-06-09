@@ -27,8 +27,8 @@ def pointInCircle(point, circle, radius):
 class Chessboard:
     WHITE = 2
     BLACK = 1
-    WHITE_KING = 3
-    BLACK_KING = 4
+    WHITE_KING = 4
+    BLACK_KING = 3
     EMPTY = 0
 
     def __init__(self):
@@ -43,6 +43,7 @@ class Chessboard:
         # 			[-1, 0, -1, 0, -1, 0, -1, 0]]
         self.gameState = {}
         self.boardPositionsCenter = {}
+        self.pieceCoordinateInsidePos = {}
         self.pieces = {
             "black": [],
             "white": []
@@ -69,6 +70,7 @@ class Chessboard:
                 board[letter + str(number)] = self.EMPTY
         self.boardPositionsCenter = board.copy()
         self.gameState = board.copy()
+        self.pieceCoordinateInsidePos = board.copy()
 
     def detectPieces(self, img):
         img = cv2.medianBlur(img, 5)
@@ -135,10 +137,14 @@ class Chessboard:
             for blackPiece in self.pieces["black"]:
                 if pointInCircle(position, blackPiece, 6):
                     self.gameState[boardKey] = self.BLACK
+                    self.pieceCoordinateInsidePos[boardKey] = blackPiece
+                    continue
 
             for whitePiece in self.pieces["white"]:
                 if pointInCircle(position, whitePiece, 6):
                     self.gameState[boardKey] = self.WHITE
+                    self.pieceCoordinateInsidePos[boardKey] = whitePiece
+                    continue
 
         return self.gameState
 
@@ -173,6 +179,27 @@ class Chessboard:
             converted[convertedKeys[i]] = final[i]
         return converted
 
+    def convertPositionFromAI(self, position):
+        boardKeys = list(self.gameState.keys())
+        mapping = {1: 4, 3: 5, 5: 6, 7: 7}
+        if position[0] % 2 == 0:
+            pos = int(position[0] / 2)
+        else:
+            pos = mapping[position[0]]
+        return boardKeys[pos + (position[1] * 8)]
+
+    def convertPositionToAI(self, position):
+        boardValues = list(self.gameState.keys())
+        reshaped = np.reshape(boardValues, (8, 4))
+        odd = reshaped[::2]
+        even = reshaped[1:8:2]
+        AIBoard = []
+        for i in range(4):
+            AIBoard.append(odd[:, i])
+            AIBoard.append(even[:, i])
+        AIBoard = np.array(AIBoard)
+        return np.array(np.where(AIBoard == position)).flatten()
+
     def prettyPrintBoard(self, gameState=None):
         if gameState is None:
             gameState = self.gameState
@@ -190,7 +217,9 @@ class Chessboard:
 
         boardKeys = list(board.keys())
         boardValues = list(board.values())
+        # print("=================================")
         for i in range(0, len(boardKeys), 8):
             print(boardKeys[i][0].capitalize(),
                   "[" + "] [".join(str(e) for e in boardValues[i:i + 8]).replace("0", " ") + "]")
         print("# ", "   ".join(str(e) for e in range(1, 9)))
+        # print("=================================")
