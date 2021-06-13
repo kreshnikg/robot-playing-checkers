@@ -10,6 +10,8 @@ import helpers
 
 
 dobot = Dobot(homeX=220, homeY=0, homeZ=-6.5)
+zMoveVal = 0
+zGrabVal = 0
 
 dobotCam = DobotCamera(
     xDobRefPoint=150.75,
@@ -52,24 +54,35 @@ pieceCoordinates = chessboard.pieceCoordinateInsidePos[fromPosition]
 # Convert piece image coordinates to dobot coordinates
 dobotCoordinates = dobotCam.convertCameraToDobot(pieceCoordinates)
 
-dobot.moveXY(dobotCoordinates[0], dobotCoordinates[1])
+dobot.move(dobotCoordinates[0], dobotCoordinates[1])
 # TODO MoveDown and GrabPiece
+# dobot.move(dobot.x, dobot.y, zGrabVal)
+# dobot.setSuction(True)
 
 # Make move
 for i in range(1, len(nextMove)):
     toPosition = chessboard.convertPositionFromAI(nextMove[i])
     dobotCoordinates = dobotCam.convertCameraToDobot(chessboard.boardPositionsCenter[toPosition])
-    dobot.moveXY(dobotCoordinates[0], dobotCoordinates[1])
+    dobot.move(dobotCoordinates[0], dobotCoordinates[1])
 # TODO MoveDown and ReleasePiece
+# dobot.move(dobot.x, dobot.y, zGrabVal)
+# dobot.setSuction(False)
 
 # Remove captured pieces
 for i in range(len(captured)):
     toRemovePosition = chessboard.convertPositionFromAI(captured[i])
     pieceCoordinates = chessboard.pieceCoordinateInsidePos[toRemovePosition]
     dobotCoordinates = dobotCam.convertCameraToDobot(pieceCoordinates)
-    dobot.moveXY(dobotCoordinates[0], dobotCoordinates[1])
+    dobot.move(dobotCoordinates[0], dobotCoordinates[1])
     # TODO MoveDown and GrabPiece
+    # dobot.move(dobot.x, dobot.y, zGrabVal)
+    # dobot.setSuction(True)
     # TODO GoUp and MovePiece outside the board
+    # dobot.move(dobot.x, dobot.y, zMoveVal)
+    # dobot.move(x, y)
     # TODO ReleasePeace
+    # dobot.setSuction(False)
+
 
 # TODO GoHome (away from camera)
+# dobot.moveHome()

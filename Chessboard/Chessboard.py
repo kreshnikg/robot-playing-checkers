@@ -141,11 +141,11 @@ class Chessboard:
             if pointInCircle(self.boardPositionsCenter[boardKey], (x, y), 6):
                 return boardKey
 
-    def convertStateToAI(self, values=True):
-        if values:
-            boardValues = list(self.gameState.values())
-        else:
+    def convertStateToAI(self, keys=False):
+        if keys:
             boardValues = list(self.gameState.keys())
+        else:
+            boardValues = list(self.gameState.values())
         reshaped = np.reshape(boardValues, (8, 4))
         odd = reshaped[::2]
         even = reshaped[1:8:2]
@@ -179,7 +179,7 @@ class Chessboard:
         return boardKeys[pos + (position[1] * 8)]
 
     def convertPositionToAI(self, position):
-        AIBoard = self.convertStateToAI(values=False)
+        AIBoard = self.convertStateToAI(keys=True)
         AIBoard = np.array(AIBoard)
         return np.array(np.where(AIBoard == position)).flatten()
 

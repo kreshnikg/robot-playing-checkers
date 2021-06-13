@@ -13,6 +13,9 @@ class Dobot:
         self.homeX = homeX
         self.homeY = homeY
         self.homeZ = homeZ
+        self.x = None
+        self.y = None
+        self.z = None
         self.suctionEnabled = False
         self.connected = False
         self.dobotConnect()
@@ -37,22 +40,27 @@ class Dobot:
         dType.SetPTPJumpParams(self.api, 10, 200, 0)
         dType.SetPTPCommonParams(self.api, 100, 100, 0)
         dType.SetHOMEParams(self.api, self.homeX, self.homeY, self.homeZ, 0, isQueued=0)
+        currentPosition = self.getPosition()
+        self.x = currentPosition[0]
+        self.y = currentPosition[1]
+        self.z = currentPosition[2]
 
     def dobotDisconnect(self):
         self.moveHome()
         dType.DisconnectDobot(self.api)
 
-    def moveXY(self, x, y):
-        dType.SetPTPCmdEx(self.api, dType.PTPMode.PTPMOVLXYZMode, x, y, self.homeZ, 0, isQueued=1)
+    def move(self, x, y, z=None):
+        if z is None:
+            z = self.z
+        dType.SetPTPCmdEx(self.api, dType.PTPMode.PTPMOVLXYZMode, x, y, z, 0, isQueued=1)
+        self.x = x
+        self.y = y
+        self.z = z
 
-    def toggleSuction(self):
-        # TODO get suctionEnabled from API
-        if self.suctionEnabled:
-            dType.SetEndEffectorSuctionCup(self.api, 0, 0)
-            self.suctionEnabled = False
-        else:
-            dType.SetEndEffectorSuctionCup(self.api, 1, 1)
-            self.suctionEnabled = True
+    def setSuction(self, enabled):
+        status = 1 if enabled else 0
+        dType.SetEndEffectorSuctionCup(self.api, status, status)
+        self.suctionEnabled = enabled
 
     def getPosition(self):
         return dType.GetPose(self.api)
