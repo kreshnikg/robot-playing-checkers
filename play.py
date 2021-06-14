@@ -8,10 +8,11 @@ import time
 import cv2
 import helpers
 
-
 dobot = Dobot(homeX=220, homeY=0, homeZ=-6.5)
-zMoveVal = 0
-zGrabVal = 0
+zUpValue = None
+zDownValue = None
+releaseX = None
+releaseY = None
 
 dobotCam = DobotCamera(
     xDobRefPoint=150.75,
@@ -55,18 +56,18 @@ pieceCoordinates = chessboard.pieceCoordinateInsidePos[fromPosition]
 dobotCoordinates = dobotCam.convertCameraToDobot(pieceCoordinates)
 
 dobot.move(dobotCoordinates[0], dobotCoordinates[1])
-# TODO MoveDown and GrabPiece
-# dobot.move(dobot.x, dobot.y, zGrabVal)
-# dobot.setSuction(True)
+dobot.move(dobot.x, dobot.y, zDownValue)  # MoveDown
+dobot.setSuction(True)  # GrabPiece
+dobot.move(dobot.x, dobot.y, zUpValue)  # MoveUP
 
 # Make move
 for i in range(1, len(nextMove)):
     toPosition = chessboard.convertPositionFromAI(nextMove[i])
     dobotCoordinates = dobotCam.convertCameraToDobot(chessboard.boardPositionsCenter[toPosition])
     dobot.move(dobotCoordinates[0], dobotCoordinates[1])
-# TODO MoveDown and ReleasePiece
-# dobot.move(dobot.x, dobot.y, zGrabVal)
-# dobot.setSuction(False)
+dobot.move(dobot.x, dobot.y, zDownValue)  # MoveDown
+dobot.setSuction(False)  # ReleasePiece
+dobot.move(dobot.x, dobot.y, zUpValue)  # MoveUP
 
 # Remove captured pieces
 for i in range(len(captured)):
@@ -74,15 +75,12 @@ for i in range(len(captured)):
     pieceCoordinates = chessboard.pieceCoordinateInsidePos[toRemovePosition]
     dobotCoordinates = dobotCam.convertCameraToDobot(pieceCoordinates)
     dobot.move(dobotCoordinates[0], dobotCoordinates[1])
-    # TODO MoveDown and GrabPiece
-    # dobot.move(dobot.x, dobot.y, zGrabVal)
-    # dobot.setSuction(True)
-    # TODO GoUp and MovePiece outside the board
-    # dobot.move(dobot.x, dobot.y, zMoveVal)
-    # dobot.move(x, y)
-    # TODO ReleasePeace
-    # dobot.setSuction(False)
+    dobot.move(dobot.x, dobot.y, zDownValue)  # MoveDown
+    dobot.setSuction(True)  # GrabPiece
+    dobot.move(dobot.x, dobot.y, zUpValue)  # MoveUP
+    # Move piece outside the board
+    dobot.move(releaseX, releaseY)
+    dobot.setSuction(False)
 
-
-# TODO GoHome (away from camera)
-# dobot.moveHome()
+# GoHome (away from camera)
+dobot.moveHome()

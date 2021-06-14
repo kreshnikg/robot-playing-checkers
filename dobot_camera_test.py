@@ -19,7 +19,7 @@ yDobPiece = yDobRefPoint + ((yCamPiece - yCamRefPoint) * yScaleFactor)
 
 dbt = Dbt.Dobot(220, 0, -6.5)
 
-dbt.moveXY(xDobPiece, yDobPiece)
+dbt.move(xDobPiece, yDobPiece)
 dbt.setSuction(True)
 
 time.sleep(1)
