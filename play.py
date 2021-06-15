@@ -44,6 +44,8 @@ alphaBetaAI.set_board(AIBoard)
 # Get moves from AI
 nextMove = alphaBetaAI.get_next_move()
 
+
+print(nextMove[-1])
 captured = AIBoard.make_move(nextMove)
 
 # Convert position from AI coordinates to Chessboard position (ex. 'a1')
