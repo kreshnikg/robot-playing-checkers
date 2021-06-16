@@ -9,11 +9,11 @@ import time
 import cv2
 import helpers
 
-dobot = Dobot(homeX=220, homeY=0, homeZ=-6.5)
-zUpValue = None
-zDownValue = None
-releaseX = None
-releaseY = None
+dobot = Dobot(homeX=64, homeY=142, homeZ=-6.5)
+zUpValue = 5
+zDownValue = -40
+releaseX = 64
+releaseY = 142
 
 dobotCam = DobotCamera(
     xDobRefPoint=150.75,
@@ -21,7 +21,8 @@ dobotCam = DobotCamera(
     xCamRefPoint=56,
     yCamRefPoint=51,
     xScaleFactor=0.68,
-    yScaleFactor=0.645
+    yScaleFactor=0.67
+    #  yScaleFactor = 0.645
 )
 
 chessboard = Chessboard()
@@ -36,8 +37,8 @@ dobotCheckers = DobotCheckers(
     releaseY
 )
 
-# img = helpers.captureBoard()
-img = cv2.imread("./img/checkers_scanner_pieces_2.jpg")
+img = helpers.captureBoard()
+# img = cv2.imread("./img/checkers_scanner_pieces_2.jpg")
 
 chessboard.detectGameState(img)
 
@@ -54,6 +55,7 @@ alphaBetaAI.set_board(AIBoard)
 
 # Get moves from AI
 nextMove = alphaBetaAI.get_next_move()
+print("AI move: ", nextMove)
 
 captured = AIBoard.make_move(nextMove)
 
@@ -65,4 +67,5 @@ dobotCheckers.release(nextMove[-1])
 if len(captured) > 0:
     dobotCheckers.capture(captured)
 
-dobot.moveHome()
+# GoHome (away from camera)
+dobot.move(releaseX, releaseY)

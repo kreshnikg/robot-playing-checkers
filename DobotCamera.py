@@ -15,6 +15,6 @@ class DobotCamera:
 
     def convertCameraToDobot(self, point):
         return (
-                self.X_DOB_REF_POINT + ((point[0] - self.X_CAM_REF_POINT) * self.X_SCALE_FACTOR),
+                self.X_DOB_REF_POINT + ((370 - point[0] - self.X_CAM_REF_POINT) * self.X_SCALE_FACTOR),
                 self.Y_DOB_REF_POINT + ((point[1] - self.Y_CAM_REF_POINT) * self.Y_SCALE_FACTOR)
         )

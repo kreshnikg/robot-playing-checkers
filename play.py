@@ -9,10 +9,10 @@ import cv2
 import helpers
 
 dobot = Dobot(homeX=220, homeY=0, homeZ=-6.5)
-zUpValue = None
-zDownValue = None
-releaseX = None
-releaseY = None
+zUpValue = 5
+zDownValue = -40
+releaseX = 64
+releaseY = 142
 
 dobotCam = DobotCamera(
     xDobRefPoint=150.75,
@@ -20,13 +20,13 @@ dobotCam = DobotCamera(
     xCamRefPoint=56,
     yCamRefPoint=51,
     xScaleFactor=0.68,
-    yScaleFactor=0.645
+    yScaleFactor=0.67
 )
 
 chessboard = Chessboard()
 
-# img = helpers.captureBoard()
-img = cv2.imread("./img/checkers_scanner_pieces_2.jpg")
+img = helpers.captureBoard()
+# img = cv2.imread("./img/checkers_scanner_pieces_2.jpg")
 
 chessboard.detectGameState(img)
 
@@ -85,4 +85,4 @@ for i in range(len(captured)):
     dobot.setSuction(False)
 
 # GoHome (away from camera)
-dobot.moveHome()
+dobot.move(releaseX, releaseY)

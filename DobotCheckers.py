@@ -12,6 +12,9 @@ class DobotCheckers:
 
     def makeMove(self, position, suction):
         dobotCoordinates = self.convertPosToDobot(position)
+        if dobotCoordinates == 0:
+            print("Dobot coordinates not found!")
+            return
         self.dobot.move(dobotCoordinates[0], dobotCoordinates[1])  # Move to specified coordinates
         self.dobot.move(self.dobot.x, self.dobot.y, self.zDownValue)  # MoveDown
         self.dobot.setSuction(suction)  # GrabPiece
@@ -34,7 +37,10 @@ class DobotCheckers:
         fromPosition = self.chessboard.convertPositionFromAI(position)
 
         # Get piece image coordinates inside specified position
-        pieceCoordinates = self.chessboard.pieceCoordinateInsidePos[fromPosition]
+        positionCoordinate = self.chessboard.pieceCoordinateInsidePos[fromPosition]
+
+        if positionCoordinate == 0:
+            positionCoordinate = self.chessboard.boardPositionsCenter[fromPosition]
 
         # Convert piece image coordinates to dobot coordinates
-        return self.dobotCamera.convertCameraToDobot(pieceCoordinates)
+        return self.dobotCamera.convertCameraToDobot(positionCoordinate)

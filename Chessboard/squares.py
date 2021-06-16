@@ -9,14 +9,14 @@ def getROIavgColor(frame, x, y, r):
     return avg
 
 
-img = cv2.imread("../img/checkers_scanner_pieces_2.jpg")
+# img = cv2.imread("../img/checkers_scanner_pieces_2.jpg")
 #
 # output = img.copy()
 # output = cv2.bitwise_not(output)
 # cv2.imshow('output', output)
-# cap = cv2.VideoCapture(1)
-# ret, img = cap.read()
-# img = img[40:410, 130:490]
+cap = cv2.VideoCapture(1)
+ret, img = cap.read()
+img = img[40:410, 130:490]
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 boardDimension = (7,7)

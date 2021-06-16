@@ -46,12 +46,12 @@ class Dobot:
         self.z = currentPosition[2]
 
     def dobotDisconnect(self):
-        self.moveHome()
+        # self.moveHome()
         dType.DisconnectDobot(self.api)
 
     def move(self, x, y, z=None):
         if z is None:
-            z = self.z
+            z = 0
         dType.SetPTPCmdEx(self.api, dType.PTPMode.PTPMOVLXYZMode, x, y, z, 0, isQueued=1)
         self.x = x
         self.y = y
