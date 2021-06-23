@@ -3,11 +3,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def getROIavgColor(frame, x, y, r):
-    roi_values = frame[int(y - r / 2):int(y + r / 2), int(x - r / 2):int(x + r / 2)]
-    avg = (np.mean(roi_values[:, :, 0]) + np.mean(roi_values[:, :, 1]) + np.mean(roi_values[:, :, 2])) / 3
-    return avg
-
 
 # img = cv2.imread("../img/checkers_scanner_pieces_2.jpg")
 #

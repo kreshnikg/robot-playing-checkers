@@ -22,7 +22,6 @@ dobotCam = DobotCamera(
     yCamRefPoint=51,
     xScaleFactor=0.68,
     yScaleFactor=0.67
-    #  yScaleFactor = 0.645
 )
 
 chessboard = Chessboard()
@@ -69,3 +68,4 @@ if len(captured) > 0:
 
 # GoHome (away from camera)
 dobot.move(releaseX, releaseY)
+

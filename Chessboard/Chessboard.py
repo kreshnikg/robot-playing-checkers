@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def getROIavgColor(frame, x, y, r):
@@ -10,6 +11,8 @@ def getROIavgColor(frame, x, y, r):
 
 def detectBoardCorners(img):
     boardDimension = (7, 7)
+    plt.imshow(img)
+    plt.show()
     retval, corners = cv2.findChessboardCorners(img, boardDimension, 0, 0)
     if retval:
         print("Board detected!")
@@ -84,7 +87,7 @@ class Chessboard:
             circlesRound = np.round(circles[0, :]).astype("int")
             for (x, y, r) in circlesRound:
                 avg = getROIavgColor(img, x, y, r)
-                if avg >= 140:
+                if avg >= 130:
                     self.pieces["white"].append((x, y))
                 else:
                     self.pieces["black"].append((x, y))
@@ -103,6 +106,8 @@ class Chessboard:
 
     def detectBoard(self, img):
         corners = detectBoardCorners(img)
+        if corners is None:
+            return False
         for i in range(len(corners)):
             x, y = corners[i][0][0], corners[i][0][1]
             if i % 2 == 0:
@@ -114,9 +119,12 @@ class Chessboard:
             else:
                 if (i + 1) % 7 == 0:
                     self.appendPosition(round(x + 22), round(y - 22), self.getNextEmptyPos())
+        return True
 
     def detectGameState(self, img):
-        self.detectBoard(img)
+        boardDetected = self.detectBoard(img)
+        if boardDetected is False:
+            return False
         self.detectPieces(img)
         boardKeys = list(self.boardPositionsCenter.keys())
         for boardKey in boardKeys:

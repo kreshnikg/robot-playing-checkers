@@ -8,17 +8,16 @@ def getROIavgColor(frame, x, y, r):
     avg = (np.mean(roi_values[:, :, 0]) + np.mean(roi_values[:, :, 1]) + np.mean(roi_values[:, :, 2])) / 3
     return avg
 
-# cap = cv2.VideoCapture(1)
-# ret, img = cap.read()
-# img = img[40:410, 130:490]
-img = cv2.imread("./img/checkers_scanner_pieces_2.jpg")
+cap = cv2.VideoCapture(1)
+ret, img = cap.read()
+img = img[40:410, 130:490]
+
+# img = cv2.imread("./img/checkers_scanner_pieces_2.jpg")
 
 # img = cv2.imread("img/checkers_scanner.jpg")
 # img = ~img
 # img = cv2.resize(img, (800, 800))
 # img = cv2.resize(img, (640, 480))
-
-# ret, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
 
 img = cv2.medianBlur(img, 5)
 # img = img[30:435, 130:515]
@@ -45,7 +44,7 @@ if circles is not None:
     for (x, y, r) in circlesRound:
         avg = getROIavgColor(img, x, y, r)
         print(x, y)
-        if avg >= 140:
+        if avg >= 130:
             # White => green
             cv2.circle(output, (x, y), r, (0, 255, 0), 4)
         else:
